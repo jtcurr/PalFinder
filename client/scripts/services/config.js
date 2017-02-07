@@ -5,11 +5,11 @@
 angular.module('myApp').config(function($routeProvider, $locationProvider, $httpProvider) {
   // Initialize Firebase
   var config = {
-    apiKey: "<API_KEY>",
-    authDomain: "<PROJECT_ID>.firebaseapp.com",
-    databaseURL: "https://<DATABASE_NAME>.firebaseio.com",
-    storageBucket: "<BUCKET>.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID"
+    apiKey: "AIzaSyCku_D8eKGNvKkbUlvxhYAt_MRn6jajrws",
+    authDomain: "misanthropiccustard.firebaseapp.com",
+    databaseURL: "https://misanthropiccustard.firebaseio.com",
+    storageBucket: "misanthropiccustard.appspot.com",
+    messagingSenderId: "177915198055"
   };
   firebase.initializeApp(config);
 
@@ -54,7 +54,7 @@ angular.module('myApp').config(function($routeProvider, $locationProvider, $http
         $rootScope.loggedIn = true;
       }
       /**
-        * @class $rootScope.attemptSignup 
+        * @class $rootScope.attemptSignup
         * @description variable that determines if user clicked on "signup" button
       */
     $rootScope.attemptSignup = false;
