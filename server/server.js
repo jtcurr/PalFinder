@@ -19,7 +19,6 @@ var client = require('twilio')(accountSid, authToken);
 app.use(bodyParser.urlencoded({
   extended: true
 }));
->>>>>>> Add heroku
 
 // var text_to_speech = watson.text_to_speech(auth.text_to_speech);
 // var params = {
@@ -56,7 +55,6 @@ app.post('/voice', function(req, res) {
   });
   res.end(twimlRes.toString());
 })
->>>>>>> Add heroku
 
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, '/../client/index.html'));
