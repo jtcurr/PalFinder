@@ -7,6 +7,8 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
 
   var database = firebase.database();
 
+   $scope.srcChange = "red.png";
+
   $scope.messageObj = {};
   /**
     * @function sendMessage
@@ -42,6 +44,14 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
     });
 
   };
+
+  $scope.buttonChange = function(){
+    if ($scope.srcChange === "green.jpg"){
+      $scope.srcChange = "red.png";
+    } else {
+      $scope.srcChange = "green.jpg";
+  }
+}
 
   $scope.hidePartial = function() {
     $rootScope.showMessages = false;
