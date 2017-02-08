@@ -21,11 +21,6 @@ var options = {
   key: fs.readFileSync('client-key.pem')
 };
 
-// app.use('/bower_components', express.static(path.join(__dirname, '/../client/bower_components')));
-// app.use('/scripts', express.static(path.join(__dirname, '/../client/scripts')));
-// app.use('/styles', express.static(path.join(__dirname, '/../client/styles')));
-// app.use('/partials', express.static(path.join(__dirname, '/../client/partials')));
-// app.use('/images', express.static(path.join(__dirname, '/../client/images')));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(__dirname + '/../client'));
@@ -34,9 +29,14 @@ app.use(express.static(__dirname + '/../client'));
 // 	res.send('HHIIHIH');
 // });
 app.post('/message', function(req, res) {
-  console.log('----------', req.body);
+  // console.log('----------', req.body);
+
   var msgFrom = req.body.From;
   var msgBody = req.body.Body;
+  exports.phoneNumber = msgFrom
+  exports.message = msgBody;
+  exports.result = true;
+
   res.send(`<Response>
     <Message>
     Hello ${msgFrom}. You said: ${msgBody}
