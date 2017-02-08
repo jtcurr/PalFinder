@@ -2,12 +2,13 @@
   * @class chatterboxCtrl
   * @description Controller for chat. Makes use of databaseAndAuth factory in order to retrieve/update chat messages from the databse.
 */
-angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope, $location, databaseAndAuth) {
+angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope, $location, $http, databaseAndAuth) {
   console.log('inside chatterboxCtrl');
 
   var database = firebase.database();
-
-   $scope.srcChange = "red.png";
+  
+  //default setting for recording button
+  $scope.srcChange = "red.png";
 
   $scope.messageObj = {};
   /**
@@ -45,13 +46,16 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
 
   };
 
-  $scope.buttonChange = function(){
-    if ($scope.srcChange === "green.jpg"){
+  $scope.recording = function(){
+    if ($scope.srcChange === "green.jpg") {
       $scope.srcChange = "red.png";
     } else {
       $scope.srcChange = "green.jpg";
+      }
+    $http.get('https://localhost:3000/recorder').success(function(data){
+      console.log('success',data)
+    })
   }
-}
 
   $scope.hidePartial = function() {
     $rootScope.showMessages = false;
