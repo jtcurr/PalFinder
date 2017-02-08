@@ -1,67 +1,64 @@
 var express = require('express');
 var path = require('path');
 var https = require('https');
-var bodyParser = require('body-parser');
 var app = express();
-// var fs = require('fs');
-// var auth = require('./authorization.js');
+var fs = require('fs');
+var BinaryServer = require('binaryjs').BinaryServer;
+var wav = require('wav');
+var auth = require('./authorization.js');
 var watson = require('watson-developer-cloud');
+var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 var recorder = require('./recorder')
 
-// var text_to_speech = watson.text_to_speech(auth.text_to_speech);
-// var params = {
-//   text: 'I am the real DJ!',
-//   voice: 'en-US_AllisonVoice',
-//   accept: 'audio/wav'
-// }
+var speech_to_text = new SpeechToTextV1 ({
+ username: auth.speech_to_text.username,
+ password: auth.speech_to_text.password
+});
 
-// text_to_speech.synthesize(params).pipe(fs.createWriteStream('speech.wav'))
+var outFile = 'demo.wav';
 
-// var options = {
-//   cert: fs.readFileSync('client-cert.pem'),
-//   key: fs.readFileSync('client-key.pem')
-// };
+binaryServer = BinaryServer({port: 9001});
 
-app.use(bodyParser.urlencoded({ extended: false }));
+binaryServer.on('connection', function(client) {
+ console.log('new connection');
+
+ var fileWriter = new wav.FileWriter(outFile, {
+   channels: 1,
+   sampleRate: 48000,
+   bitDepth: 16
+ });
+
+ client.on('stream', function(stream, meta) {
+   console.log('new stream');
+   stream.pipe(fileWriter);
+
+   stream.on('end', function() {
+     fileWriter.end();
+     console.log('wrote to file ' + outFile);
+   });
+ });
+});
+
+var options = {
+ cert: fs.readFileSync('client-cert.pem'),
+ key: fs.readFileSync('client-key.pem')
+};
 
 app.use(express.static(__dirname + '/../client'));
 
-// app.get('/message', function(req, res) {
-// 	res.send('HHIIHIH');
-// });
-app.post('/message', function(req, res) {
-  // console.log('----------', req.body);
-
-  var msgFrom = req.body.From;
-  var msgBody = req.body.Body;
-  exports.phoneNumber = msgFrom
-  exports.message = msgBody;
-  exports.result = true;
-
-  res.send(`<Response>
-    <Message>
-    Hello ${msgFrom}. You said: ${msgBody}
-    </Message>
-    </Response>`)
-});
-
 //start and stop recording
-app.get('/recorder', recorder.toggleState);
+app.post('/recorder', function(req, res) {
+    console.log('PARSED request', req.socket);
+    res.send('start recording');
+});
 
 app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, '/../client/index.html'));
+ res.sendFile(path.join(__dirname, '/../client/index.html'));
 });
 
-// app.get('/send-message', function(req,res) {
-//   console.log('serving request ' + req.method + ' at ' + req.url);
-//   res.sendFile(path.join(__dirname, '/../client/index.html'));
-// });
 
-// var server = https.createServer(options, app);
+var server = https.createServer(options, app);
 
-// server.listen(3000, function () {
-//   console.log('Server listening on port 3000!')
-// })
-app.listen(3000, function() {
-  console.log('You are listening on port 3000!')
+server.listen(3000, function () {
+ console.log('Server listening on port 3000!')
 })
