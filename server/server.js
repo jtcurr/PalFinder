@@ -3,8 +3,8 @@ var path = require('path');
 var https = require('https');
 var bodyParser = require('body-parser');
 var app = express();
-var fs = require('fs');
-var auth = require('./authorization.js');
+// var fs = require('fs');
+// var auth = require('./authorization.js');
 var watson = require('watson-developer-cloud');
 
 // var text_to_speech = watson.text_to_speech(auth.text_to_speech);
@@ -16,10 +16,10 @@ var watson = require('watson-developer-cloud');
 
 // text_to_speech.synthesize(params).pipe(fs.createWriteStream('speech.wav'))
 
-var options = {
-  cert: fs.readFileSync('client-cert.pem'),
-  key: fs.readFileSync('client-key.pem')
-};
+// var options = {
+//   cert: fs.readFileSync('client-cert.pem'),
+//   key: fs.readFileSync('client-key.pem')
+// };
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
