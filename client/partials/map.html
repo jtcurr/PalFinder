@@ -9,6 +9,7 @@
   </form>
 </div>
 
+
 <div ng-controller="initializeMap" class="map-wrapper">
   <ng-map class="myMap" center="current-location" zoom="14" default-style="false">
     <directions suppress-markers="true"></directions>
@@ -32,6 +33,7 @@
       <div ng-repeat="message in messageObj" style="margin: 10px 0;">
         <b>{{message.username}}</b>: {{message.text}}
       </div>
+
     </div>  
     
     <div class="chatCloseButton">
@@ -40,12 +42,11 @@
 
     <div class="input-field">
       <form>
-        <input type="text" size="500" ng-model="text" style="width: 95%" autofocus /><br/>
+        <input type="text" ng-model="text" style="width: 87%" autofocus />
+          <img id='img' ng-src="../images/{{srcChange}}" ng-click="buttonChange()">
         <button type="submit" ng-click="sendMessage()" style="visibility: hidden">Send Message</button>
+        
       </form>
-    <div>
-
-  </div>
 
 </div>
 
