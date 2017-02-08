@@ -3,6 +3,17 @@ var path = require('path');
 var https = require('https');
 var app = express();
 var fs = require('fs');
+var auth = require('./authorization.js');
+var watson = require('watson-developer-cloud');
+
+// var text_to_speech = watson.text_to_speech(auth.text_to_speech);
+// var params = {
+//   text: 'I am the real DJ!',
+//   voice: 'en-US_AllisonVoice',
+//   accept: 'audio/wav'
+// }
+
+// text_to_speech.synthesize(params).pipe(fs.createWriteStream('speech.wav'))
 
 var options = {
   cert: fs.readFileSync('client-cert.pem'),
