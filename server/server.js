@@ -5,6 +5,7 @@ var app = express();
 var fs = require('fs');
 var auth = require('./authorization.js');
 var watson = require('watson-developer-cloud');
+var recorder = require('./recorder')
 
 // var text_to_speech = watson.text_to_speech(auth.text_to_speech);
 // var params = {
@@ -27,6 +28,9 @@ var options = {
 // app.use('/images', express.static(path.join(__dirname, '/../client/images')));
 
 app.use(express.static(__dirname + '/../client'));
+
+//start and stop recording
+app.get('/recorder', recorder.toggleState);
 
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, '/../client/index.html'));
