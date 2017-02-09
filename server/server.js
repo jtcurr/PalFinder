@@ -3,8 +3,11 @@ var path = require('path');
 var https = require('https');
 var app = express();
 var fs = require('fs');
+var BinaryServer = require('binaryjs').BinaryServer;
+var wav = require('wav');
 var auth = require('./authorization.js');
 var watson = require('watson-developer-cloud');
+var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 var recorder = require('./recorder')
 var bodyParser = require('body-parser');
 var twilio = require('twilio');
@@ -39,14 +42,34 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-// var text_to_speech = watson.text_to_speech(auth.text_to_speech);
-// var params = {
-//   text: 'I am the real DJ!',
-//   voice: 'en-US_AllisonVoice',
-//   accept: 'audio/wav'
-// }
+var speech_to_text = new SpeechToTextV1 ({
+ username: auth.speech_to_text.username,
+ password: auth.speech_to_text.password
+});
 
-// text_to_speech.synthesize(params).pipe(fs.createWriteStream('speech.wav'))
+var outFile = 'demo.wav';
+
+binaryServer = BinaryServer({port: 9001});
+
+binaryServer.on('connection', function(client) {
+ console.log('new connection');
+
+ var fileWriter = new wav.FileWriter(outFile, {
+   channels: 1,
+   sampleRate: 48000,
+   bitDepth: 16
+ });
+
+ client.on('stream', function(stream, meta) {
+   console.log('new stream');
+   stream.pipe(fileWriter);
+
+   stream.on('end', function() {
+     fileWriter.end();
+     console.log('wrote to file ' + outFile);
+   });
+ });
+});
 
 // app.use('/bower_components', express.static(path.join(__dirname, '/../client/bower_components')));
 // app.use('/scripts', express.static(path.join(__dirname, '/../client/scripts')));
@@ -111,9 +134,21 @@ app.post('/message', function(req, res) {
 
 //start and stop recoing
 app.get('/recorder', recorder.toggleState)
+var options = {
+ cert: fs.readFileSync('client-cert.pem'),
+ key: fs.readFileSync('client-key.pem')
+};
+
+app.use(express.static(__dirname + '/../client'));
+
+//start and stop recording
+app.post('/recorder', function(req, res) {
+    console.log('PARSED request', req.socket);
+    res.send('start recording');
+});
 
 app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, '/../client/index.html'));
+ res.sendFile(path.join(__dirname, '/../client/index.html'));
 });
 
 // app.get('/send-message', function(req,res) {
@@ -123,4 +158,4 @@ app.get('*', function (req, res) {
 
 app.listen(3000, function() {
   console.log('listening on port 3000');
-})
+});
