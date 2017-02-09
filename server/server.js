@@ -47,6 +47,18 @@ var speech_to_text = new SpeechToTextV1 ({
  password: auth.speech_to_text.password
 });
 
+var params = {
+  model: 'en-US_BroadbandModel',
+  content_type: 'audio/wav',
+  continuous: true,
+  'interim_results': true,
+  'max_alternatives': 3,
+  'word_confidence': false,
+  timestamps: false,
+  smart_formatting: true
+};
+
+
 var index = 1;
 var outFile = 'demo'+index+ '.wav';
 
