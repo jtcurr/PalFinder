@@ -77,17 +77,17 @@ function translateSpeechToText() {
   recognizeStream.setEncoding('utf8');
 
   // Listen for events.
-  recognizeStream.on('results', function(event) { 
+  recognizeStream.on('results', function(event) {
     console.log('RESULT', event);
   });
-  recognizeStream.on('data', function(event) { 
+  recognizeStream.on('data', function(event) {
     console.log('DATA',event);
   });
   recognizeStream.on('error', function(event) {
-    console.log('ERROR', event) 
+    console.log('ERROR', event)
   });
   recognizeStream.on('close', function(event) {
-    console.log('CLOSED', event) 
+    console.log('CLOSED', event)
   });
 }
 
@@ -153,9 +153,9 @@ app.get('/getMessages', function(uid) {
 app.post('/message', function(req, res) {
   console.log('----------', req.body);
 
-  var msgTo = req.body.To;
+  var msgTo = req.body.To.slice(1);
   var unqNumber = req.body.SmsMessageSid;
-  var msgFrom = req.body.From;
+  var msgFrom = req.body.From.slice(1);
   var msgBody = req.body.Body;
   db.ref('twilioMessages/' + msgTo + '/' +  unqNumber).set({
     "from": msgFrom,
