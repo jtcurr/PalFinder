@@ -2,7 +2,6 @@
  * @description Controller for chat. Makes use of databaseAndAuth factory in order to retrieve/update chat messages from the databse.
 */
 angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope, $location, $http, databaseAndAuth) {
- console.log('inside chatterboxCtrl');
 
  var database = firebase.database();
  
@@ -34,9 +33,9 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
    * @memberOf chatterboxCtrl
    * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
  */
-
- $scope.binaryClient;
- $scope.isRecording = null;
+$scope.binaryClient;
+$scope.isRecording = null;
+window.Stream;
 
  $scope.fetchMessage = function() {
    
@@ -58,7 +57,6 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
 
    if ($scope.srcChange === "green.jpg") {
      $scope.srcChange = "red.png";
-
      window.Stream.end();
 
    } else {
@@ -66,8 +64,8 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
 
      $scope.binaryClient = new BinaryClient('ws://localhost:9001');
 
-     client.on('open', function() {
-       window.Stream = client.createStream();
+     $scope.binaryClient.on('open', function() {
+       window.Stream = $scope.binaryClient.createStream();
 
        if (!navigator.getUserMedia)
          navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -92,10 +90,14 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
          recorder = context.createScriptProcessor(bufferSize, 1, 1);
 
          recorder.onaudioprocess = function(e){
-           if(!recording) return;
+          if ($scope.srcChange === 'red.png') {
+             return;
+          }
            console.log ('recording');
            var left = e.inputBuffer.getChannelData(0);
+          
            window.Stream.write(convertoFloat32ToInt16(left));
+          
          }
 
          audioInput.connect(recorder)

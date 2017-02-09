@@ -47,7 +47,8 @@ var speech_to_text = new SpeechToTextV1 ({
  password: auth.speech_to_text.password
 });
 
-var outFile = 'demo.wav';
+var index = 1;
+var outFile = 'demo'+index+ '.wav';
 
 binaryServer = BinaryServer({port: 9001});
 
@@ -61,7 +62,6 @@ binaryServer.on('connection', function(client) {
  });
 
  client.on('stream', function(stream, meta) {
-   console.log('new stream');
    stream.pipe(fileWriter);
 
    stream.on('end', function() {
@@ -71,11 +71,6 @@ binaryServer.on('connection', function(client) {
  });
 });
 
-// app.use('/bower_components', express.static(path.join(__dirname, '/../client/bower_components')));
-// app.use('/scripts', express.static(path.join(__dirname, '/../client/scripts')));
-// app.use('/styles', express.static(path.join(__dirname, '/../client/styles')));
-// app.use('/partials', express.static(path.join(__dirname, '/../client/partials')));
-// app.use('/images', express.static(path.join(__dirname, '/../client/images')));
 
 app.use(express.static(__dirname + '/../client'));
 
@@ -132,12 +127,6 @@ app.post('/message', function(req, res) {
     </Response>`)
 });
 
-//start and stop recoing
-app.get('/recorder', recorder.toggleState)
-var options = {
- cert: fs.readFileSync('client-cert.pem'),
- key: fs.readFileSync('client-key.pem')
-};
 
 app.use(express.static(__dirname + '/../client'));
 
@@ -155,6 +144,7 @@ app.get('*', function (req, res) {
 //   console.log('serving request ' + req.method + ' at ' + req.url);
 //   res.sendFile(path.join(__dirname, '/../client/index.html'));
 // });
+
 
 app.listen(3000, function() {
   console.log('listening on port 3000');
