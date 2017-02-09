@@ -47,6 +47,18 @@ var speech_to_text = new SpeechToTextV1 ({
  password: auth.speech_to_text.password
 });
 
+var params = {
+  model: 'en-US_BroadbandModel',
+  content_type: 'audio/wav',
+  continuous: true,
+  'interim_results': true,
+  'max_alternatives': 3,
+  'word_confidence': false,
+  timestamps: false,
+  smart_formatting: true
+};
+
+
 var index = 1;
 var outFile = 'demo'+index+ '.wav';
 
@@ -70,6 +82,31 @@ binaryServer.on('connection', function(client) {
    });
  });
 });
+
+// Create the stream.
+var recognizeStream = speech_to_text.createRecognizeStream(params);
+
+// Pipe in the audio
+fs.createReadStream('demo1.wav').pipe(recognizeStream);
+
+// Pipe out the transcription to a file.
+recognizeStream.pipe(fs.createWriteStream('transcription.txt'));
+
+// Get strings instead of buffers from 'data' events.
+recognizeStream.setEncoding('utf8');
+
+// Listen for events.
+recognizeStream.on('results', function(event) { 
+  console.log(event);
+});
+recognizeStream.on('data', function(event) { 
+  console.log(event);
+});
+recognizeStream.on('error', function(event) { 
+});
+recognizeStream.on('close', function(event) { 
+});
+
 
 
 app.use(express.static(__dirname + '/../client'));
