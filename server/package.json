@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "body-parser": "^1.16.0",
     "firebase": "*",
     "jsdoc": "^3.4.3"
   },
@@ -16,10 +17,13 @@
     "binaryjs": "^0.2.1",
     "body-parser": "^1.16.0",
     "express": "^4.14.1",
+    "firebase-admin": "^4.1.0",
     "forever": "^0.15.3",
     "get-user-media-promise": "^1.1.1",
     "microphone-stream": "^3.0.6",
     "requirejs": "^2.3.2",
+    "twilio": "^2.11.1",
+    "watson-developer-cloud": "^2.17.1",
     "watson-developer-cloud": "^2.17.1",
     "wav": "^1.0.1"
   }

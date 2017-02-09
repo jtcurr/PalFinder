@@ -1,6 +1,6 @@
 var getUserMedia = require('get-user-media-promise');
 var MicrophoneStream = require('microphone-stream');
-console.log(getUserMedia.isSupported);
+// console.log(getUserMedia.isSupported);
 module.exports = {
 	isRecording: false,
   toggleState: function(req, res) {
