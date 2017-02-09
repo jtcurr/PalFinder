@@ -83,6 +83,31 @@ binaryServer.on('connection', function(client) {
  });
 });
 
+// Create the stream.
+var recognizeStream = speech_to_text.createRecognizeStream(params);
+
+// Pipe in the audio
+fs.createReadStream('demo1.wav').pipe(recognizeStream);
+
+// Pipe out the transcription to a file.
+recognizeStream.pipe(fs.createWriteStream('transcription.txt'));
+
+// Get strings instead of buffers from 'data' events.
+recognizeStream.setEncoding('utf8');
+
+// Listen for events.
+recognizeStream.on('results', function(event) { 
+  console.log(event);
+});
+recognizeStream.on('data', function(event) { 
+  console.log(event);
+});
+recognizeStream.on('error', function(event) { 
+});
+recognizeStream.on('close', function(event) { 
+});
+
+
 
 app.use(express.static(__dirname + '/../client'));
 
