@@ -2,27 +2,12 @@
   * @class privateMessages
   * @description Controller for that handles private messaging
 */
-// var messageTwilio = require('../../server/server.js');
 
 angular.module('myApp').controller('privateMessages', function($rootScope, $scope, $http, $location) {
     /**
       * @class escapeEmailAddress
       * @description Creates an unique identifier for the database based on user email. The database does not allow keys with periods (.) so this function converts periods into commas. This allows us to find the user and update/delete their data (especially private messages) based on their email.
     */
-    // var twilioPhoneNumber = function() {
-    //   $http({
-    //     method: 'GET',
-    //     url:'http://localhost:3000/message'
-    //   }).then(function(response) {
-    //     console.log('--------333333', response);
-    //   }) 
-    // }
-    // if (messageTwilio.result) {
-    //   $scope.sign = true;
-    //   $scope.number = messageTwilio.phoneNumber; 
-    //   $scope.message = messageTwilio.message;
-
-    // }
     function escapeEmailAddress(email) {
         if (!email) return false
 

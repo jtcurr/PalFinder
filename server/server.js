@@ -117,14 +117,16 @@ app.get('/getMessages', function(uid) {
 });
 
 app.post('/message', function(req, res) {
-  // console.log('----------', req.body);
+  console.log('----------', req.body);
 
+  var msgTo = req.body.To;
+  var unqNumber = req.body.SmsMessageSid;
   var msgFrom = req.body.From;
   var msgBody = req.body.Body;
-  exports.phoneNumber = msgFrom
-  exports.message = msgBody;
-  exports.result = true;
-
+  db.ref('twilioMessages/' + msgTo + '/' +  unqNumber).set({
+    "from": msgFrom,
+    "body": msgBody
+  })
   res.send(`<Response>
     <Message>
     Hello ${msgFrom}. You said: ${msgBody}
@@ -138,8 +140,6 @@ var options = {
  cert: fs.readFileSync('client-cert.pem'),
  key: fs.readFileSync('client-key.pem')
 };
-
-app.use(express.static(__dirname + '/../client'));
 
 //start and stop recording
 app.post('/recorder', function(req, res) {

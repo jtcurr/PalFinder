@@ -1,4 +1,4 @@
-angular.module('myApp').controller('privateMessages', function($rootScope, $scope) {
+angular.module('myApp').controller('showNewMessages', function($rootScope, $scope) {
   $scope.showAllNewMessages = function() {
     $http({
       method: 'GET',
