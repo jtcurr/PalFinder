@@ -42,6 +42,9 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+var index = 1;
+var outFile = 'demo'+index+'.wav';
+
 var speech_to_text = new SpeechToTextV1 ({
  username: auth.speech_to_text.username,
  password: auth.speech_to_text.password
@@ -59,10 +62,34 @@ var params = {
 };
 
 
-var index = 1;
-var outFile = 'demo'+index+ '.wav';
-
 binaryServer = BinaryServer({port: 9001});
+
+function translateSpeechToText() {
+  var recognizeStream = speech_to_text.createRecognizeStream(params);
+
+  // Pipe in the audio
+  fs.createReadStream('demo1.wav').pipe(recognizeStream);
+
+  // Pipe out the transcription to a file.
+  recognizeStream.pipe(fs.createWriteStream('transcription.txt'));
+
+  // Get strings instead of buffers from 'data' events.
+  recognizeStream.setEncoding('utf8');
+
+  // Listen for events.
+  recognizeStream.on('results', function(event) { 
+    console.log('RESULT', event);
+  });
+  recognizeStream.on('data', function(event) { 
+    console.log('DATA',event);
+  });
+  recognizeStream.on('error', function(event) {
+    console.log('ERROR', event) 
+  });
+  recognizeStream.on('close', function(event) {
+    console.log('CLOSED', event) 
+  });
+}
 
 binaryServer.on('connection', function(client) {
  console.log('new connection');
@@ -74,40 +101,15 @@ binaryServer.on('connection', function(client) {
  });
 
  client.on('stream', function(stream, meta) {
-   stream.pipe(fileWriter);
+    stream.pipe(fileWriter);
 
    stream.on('end', function() {
+    translateSpeechToText();
      fileWriter.end();
      console.log('wrote to file ' + outFile);
    });
  });
 });
-
-// Create the stream.
-var recognizeStream = speech_to_text.createRecognizeStream(params);
-
-// Pipe in the audio
-fs.createReadStream('demo1.wav').pipe(recognizeStream);
-
-// Pipe out the transcription to a file.
-recognizeStream.pipe(fs.createWriteStream('transcription.txt'));
-
-// Get strings instead of buffers from 'data' events.
-recognizeStream.setEncoding('utf8');
-
-// Listen for events.
-recognizeStream.on('results', function(event) { 
-  console.log(event);
-});
-recognizeStream.on('data', function(event) { 
-  console.log(event);
-});
-recognizeStream.on('error', function(event) { 
-});
-recognizeStream.on('close', function(event) { 
-});
-
-
 
 app.use(express.static(__dirname + '/../client'));
 
