@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "express": "^4.14.1",
+    "firebase-admin": "^4.1.0",
     "forever": "^0.15.3",
     "get-user-media-promise": "^1.1.1",
     "microphone-stream": "^3.0.6",

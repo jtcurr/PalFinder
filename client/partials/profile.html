@@ -16,6 +16,9 @@
     <input type="text" ng-model="newTwilioNumber">
     <button type="submit" ng-click="updateTwilioNumber()">Update Twilio Number</button>
 </div>
+<div ng-controller="showNewMessages">
+    <button type="submit" ng-click="showAllNewMessages()">Show New Twilio Messages</button>
+</div>
 <div id="sendMessages">
     <input type="text" ng-model="message">
     <select ng-model="target">
