@@ -15,7 +15,8 @@ var speech_to_text = new SpeechToTextV1 ({
  password: auth.speech_to_text.password
 });
 
-var outFile = 'demo.wav';
+var index = 1;
+var outFile = 'demo'+index+ '.wav';
 
 binaryServer = BinaryServer({port: 9001});
 
@@ -29,7 +30,6 @@ binaryServer.on('connection', function(client) {
  });
 
  client.on('stream', function(stream, meta) {
-   console.log('new stream');
    stream.pipe(fileWriter);
 
    stream.on('end', function() {
@@ -38,11 +38,6 @@ binaryServer.on('connection', function(client) {
    });
  });
 });
-
-var options = {
- cert: fs.readFileSync('client-cert.pem'),
- key: fs.readFileSync('client-key.pem')
-};
 
 app.use(express.static(__dirname + '/../client'));
 
@@ -57,8 +52,6 @@ app.get('*', function (req, res) {
 });
 
 
-var server = https.createServer(options, app);
-
-server.listen(3000, function () {
+app.listen(3000, function () {
  console.log('Server listening on port 3000!')
 })
