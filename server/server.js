@@ -157,6 +157,7 @@ app.post('/message', function(req, res) {
   var unqNumber = req.body.SmsMessageSid;
   var msgFrom = req.body.From.slice(1);
   var msgBody = req.body.Body;
+  
   db.ref('twilioMessages/' + msgTo + '/' +  unqNumber).set({
     "from": msgFrom,
     "body": msgBody
