@@ -14,6 +14,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
       databaseAndAuth.database.ref('users/' + user.uid).set({
         username: $scope.email.slice(0, $scope.email.indexOf('@')),
         email: $scope.email,
+        twilioNumber: 'none',
+        phoneNumber: 'none'
       });
       $rootScope.loggedIn = true;
       $location.path('/map');
@@ -34,6 +36,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
         email: user.email
       }
       fetchMessages();
+      showAllNewMessages();
       getUsers();
       localStorage.setItem('user', user);
       $scope.email = '';
@@ -98,6 +101,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
     @param databaseUser if user is logged in, databaseUser will be truthy and will contain information about that user (from the database). This information is used to identify the user and attach their messages and location to their appropriate database entry (i.e. John's location will not be stored under Amy's database entry). If user is logged out, databaseUser will be falsy.
   */
   databaseAndAuth.auth.onAuthStateChanged(function(databaseUser) {
+    console.log('scope', $scope);
+    console.log('root scope', $rootScope);
     if (databaseUser) {
       console.log('calling this function');
       localStorage.setItem('user', databaseUser);
@@ -109,6 +114,7 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
         email: databaseUser.email
       }
       fetchMessages();
+      showAllNewMessages();
       getUsers();
       $rootScope.$broadcast('user:logIn', databaseUser.uid);
       $scope.userId = databaseUser.uid;
@@ -175,5 +181,50 @@ var fetchMessages = function () {
   $scope.showProfile = function () {
     $rootScope.accessProfile = true;
     $location.path('/profile');
+  }
+
+  var showAllNewMessages = function() {
+    var user = firebase.auth().currentUser.uid;
+    var db = firebase.database();
+    var dbUsersTwilioNumber = db.ref('users/' + user + '/twilioNumber');
+    var dbUser = db.ref('users');
+    var dbTwilioMessages = db.ref('twilioMessages');
+
+    //Single Twilio Number
+    dbUsersTwilioNumber.on('value', function(snaps) {
+      var userTwilioNumber = snaps.val();
+      //All Users -> unique -> username / password
+      dbUser.on('value', function(sn) {
+        var users = sn.val();
+        //All TwilioMessages -> Twilio Number -> unique -> body / from
+        dbTwilioMessages.on('value', function(snapshot) {
+          var allTwilioMessages = snapshot.val();
+          //loop through twilio numbers
+          for(var key in allTwilioMessages) {
+            //loop through unique numbers
+            for(var k in allTwilioMessages[key]) {
+              //loop through each user
+              for(var ke in users) {
+                var username = users[ke].username;
+                var userPhoneNumber = users[ke].phoneNumber;
+                //if twilio message phone number matches a users twilio number
+                if(allTwilioMessages[key][k].from == userPhoneNumber){
+                  //replace number with username
+                  allTwilioMessages[key][k].from = username;
+                  //users twilio messages equal the values of each of the unique numbers
+                  $scope.twilioMessages = allTwilioMessages[key];
+                } else {
+                  if(allTwilioMessages[key][k].from) {
+                    //if from matches the users phone number
+                    //users twilio messages equal the values of each of the unique numbers
+                    $scope.twilioMessages = allTwilioMessages[key];
+                  }
+                }
+              }
+            }
+          }
+        });
+      })
+    });
   }
 });
