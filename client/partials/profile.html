@@ -16,6 +16,10 @@
     <input type="text" ng-model="newTwilioNumber">
     <button type="submit" ng-click="updateTwilioNumber()">Update Twilio Number</button>
 </div>
+<div ng-controller="addPhoneNumber">
+    <input type="text" ng-model="newPhoneNumber">
+    <button type="submit" ng-click="updatePhoneNumber()">Update Phone Number</button>
+</div>
 <div id="sendMessages">
     <input type="text" ng-model="message">
     <select ng-model="target">
@@ -27,12 +31,10 @@
     <ul>
         <li ng-repeat="messageObj in privateMessages">{{messageObj.sender}} : {{messageObj.message}}</li>
     </ul>
-</div>
-  <div ng-controller="privateMessages">
-    <ul >
-      <li>{{number}} : {{message}}</li>
-
+    <h4>Twilio Messages</h4>
+    <ul>
+      <li ng-repeat="message in twilioMessages">{{message.from}} : {{message.body}}</li>
     </ul>
-  </div>
+</div>
 </body>
 </html>

@@ -7,12 +7,12 @@ angular.module('myApp').controller('initializeMap', function($scope, databaseAnd
 
   $scope.$on('user:updatedOrAdded', function(event, data) {
     $scope.userLocations[data[0]] = data[1];
-    console.log('user location added or updated', data[1]);
+    // console.log('user location added or updated', data[1]);
     $scope.$apply();
   });
 
   $scope.$on('user:loggedOut', function(event, data) {
-    $scope.userLocations = undefined; 
+    $scope.userLocations = undefined;
     $scope.$apply();
   });
   $scope.$on('user:logIn', function(event, data) {
