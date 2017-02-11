@@ -32,8 +32,8 @@
         <li ng-repeat="messageObj in privateMessages">{{messageObj.sender}} : {{messageObj.message}}</li>
     </ul>
     <h4>Twilio Messages</h4>
-    <ul>
-      <li ng-repeat="message in twilioMessages">{{message.from}} : {{message.body}}</li>
+    <ul ng-repeat="message in twilioMessages">
+      <li ng-if="message.from"> {{message.from}} : {{message.body}}</li>
     </ul>
 </div>
 </body>

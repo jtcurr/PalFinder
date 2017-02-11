@@ -181,6 +181,39 @@ var fetchMessages = function () {
     $location.path('/profile');
   }
 
+  // var showAllNewMessages = function() {
+  //   $scope.twilioMessages = [];
+  //   var user = firebase.auth().currentUser;
+  //   var db = firebase.database();
+  //   var dbUsersTwilioNumber = db.ref('users/' + user.uid + '/twilioNumber');
+  //   var dbUser = db.ref('users');
+  //   var dbTwilioMessages = db.ref('twilioMessages');
+  //
+  //   //Single Twilio Number
+  //   dbUser.on('value', function(sn) {
+  //     var users = sn.val();
+  //     //loop through each user
+  //     for(var ke in users) {
+  //       //when we have the right user
+  //       if(user.email === users[ke].email) {
+  //         //we get their twilio number
+  //         var loggedInUsersTwilioNumber = users[ke].twilioNumber;
+  //         //All TwilioMessages -> Twilio Number -> unique -> body / from
+  //         dbTwilioMessages.on('value', function(snaps) {
+  //           var twilioNumbersFromMessages = snaps.val();
+  //           //loop through twilio numbers
+  //           for(var key in twilioNumbersFromMessages) {
+  //             if(key == loggedInUsersTwilioNumber) {
+  //               //users twilio messages equal the values of each of the unique numbers
+  //               $scope.twilioMessages = twilioNumbersFromMessages[key];
+  //             }
+  //           }
+  //         })
+  //       }
+  //     }
+  //   });
+  // }
+
   var showAllNewMessages = function() {
     $scope.twilioMessages = [];
     var user = firebase.auth().currentUser;
@@ -188,12 +221,14 @@ var fetchMessages = function () {
     var dbUsersTwilioNumber = db.ref('users/' + user.uid + '/twilioNumber');
     var dbUser = db.ref('users');
     var dbTwilioMessages = db.ref('twilioMessages');
+    var twilioNumbersArr = {};
 
     //Single Twilio Number
     dbUser.on('value', function(sn) {
       var users = sn.val();
       //loop through each user
       for(var ke in users) {
+        twilioNumbersArr[users[ke].phoneNumber] = users[ke].username;
         //when we have the right user
         if(user.email === users[ke].email) {
           //we get their twilio number
@@ -202,10 +237,17 @@ var fetchMessages = function () {
           dbTwilioMessages.on('value', function(snaps) {
             var twilioNumbersFromMessages = snaps.val();
             //loop through twilio numbers
-            for(var key in twilioNumbersFromMessages) {
-              if(key == loggedInUsersTwilioNumber) {
+            for(var twilioMessagesNumber in twilioNumbersFromMessages) {
+              if(twilioMessagesNumber == loggedInUsersTwilioNumber) {
+                for(var k in twilioNumbersFromMessages[twilioMessagesNumber]) {
+                  for(var keys in twilioNumbersArr) {
+                    if(keys == twilioNumbersFromMessages[twilioMessagesNumber][k].from) {
+                      twilioNumbersFromMessages[twilioMessagesNumber][k].from = twilioNumbersArr[keys];
+                    }
+                  }
+                }
                 //users twilio messages equal the values of each of the unique numbers
-                $scope.twilioMessages = twilioNumbersFromMessages[key];
+                $scope.twilioMessages = twilioNumbersFromMessages[twilioMessagesNumber];
               }
             }
           })
