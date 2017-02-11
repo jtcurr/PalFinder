@@ -31,13 +31,83 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
    var chatUsername = chatEmail.slice(0, chatEmail.indexOf('@'));
    
    var chatId = +new Date(Date()); //use time in milliseconds for chatId
-   var ref = database.ref('twilioMessages');
+   // var ref = database.ref('twilioMessages');
+   // ref.on('value', gotData, errData);
+   database.ref('chats/' + chatId).set({
+     username: chatUsername,
+     text: $scope.text,
+     createdAt: Date()
+   });
+
+   $scope.text = '';
+ };
+ /**
+   * @function fetchMessage
+   * @memberOf chatterboxCtrl
+   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
+ */
+$scope.binaryClient;
+$scope.isRecording = null;
+window.Stream;
+
+ var firebaseDatabase = function(path, cb) {
+   var ref = database.ref(path);
    ref.on('value', gotData, errData);
-
    function gotData(data) {
+      var counter = 0;
 
-    var twilioMessages = data.val();
-    console.log('--------', data.val())
+      var fireData = data.val();
+      // console.log('--------', data.val())
+      // var dataObj = data.val();
+      if (path === 'twilioMessages') {
+
+        var twilioNumbers = Object.keys(fireData);
+        twilioNumbers.map(function(number) {
+          counter += Object.keys(fireData[number]).length;
+        });
+
+      } else if (path === 'chats') {
+
+          counter = Object.keys(fireData).length;
+
+      } else if (path === 'privateMessages') {
+        var personalEmails = Object.keys(fireData);
+
+        personalEmails.map(function(singleEmail) {
+
+          counter += Object.keys(fireData[singleEmail]).length;
+        });
+      }
+       cb(counter);
+   }
+  function errData(err) {
+    console.log(err)
+  }
+ }
+
+$scope.mapd3 = function(cb) {
+  // console.log('---------' , $scope.firebaseData);
+  // we are going to make a request to the server side
+  var D3DataObject = {};
+  var data = [];
+  var pathArray = ['twilioMessages','chats','privateMessages'];
+    // var twilioMessages = data.val();
+    // console.log('--------', data.val())
+    // var dataObj = data.val();
+    // var keys = Object.keys(data.val());
+    // var counter = 0;
+    // var count = keys.map(function(key) {
+    //   return Object.keys(dataObj[key]).length;
+    // })
+    pathArray.forEach(function(path) {
+      firebaseDatabase(path, function(counter) {
+        console.log('^^^^^^^^^^^^', path);
+        D3DataObject["frequency"] = counter;
+        D3DataObject["letter"] = path;
+        data.push(D3DataObject);
+        D3DataObject = {};
+        console.log('`````````````', data);
+     if (data.length === 3) {
 
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
@@ -52,23 +122,7 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
 
     var g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    var data = [
-      {letter: 'UK', frequency: '50'},
-      {letter: 'USA', frequency: '2.14'},
-      {letter: 'Palestine', frequency: '2.14'},
-      {letter: 'France', frequency: '2.14'},
-      {letter: 'Jordan', frequency: '2.14'},
-      {letter: 'Syria', frequency: '2.14'},
-      {letter: 'Lebanon', frequency: '2.14'},
-      {letter: 'Brazil', frequency: '2.14'},
-      {letter: 'Brazil', frequency: '2.14'},
-      {letter: 'Brazil', frequency: '3.2'},
-      {letter: 'Brazil', frequency: '2.14'},
-      {letter: 'Brazil', frequency: '34.5'},
-      {letter: 'Brazil', frequency: '9.12'},
-      {letter: 'Brazil', frequency: '4.56'},
 
-      ]
   var yScale = d3.scaleLinear()
     .range([height, 0]);
    yScale = yScale.domain([0, d3.max(data, function(d) { return d.frequency; } ) ]);
@@ -109,32 +163,10 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
       .attr("y", function(d) { return y(d.frequency); })
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.frequency); });
-   }
 
-   function errData(err) {
-    console.log(err)
-   }
-   database.ref('chats/' + chatId).set({
-     username: chatUsername,
-     text: $scope.text,
-     createdAt: Date()
-   });
-
-   $scope.text = '';
- };
- /**
-   * @function fetchMessage
-   * @memberOf chatterboxCtrl
-   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
- */
-$scope.binaryClient;
-$scope.isRecording = null;
-window.Stream;
-
-$scope.mapd3 = function() {
-  console.log('---------' , $scope.firebaseData);
-  // we are going to make a request to the server side
-
+     }   
+      })
+    });
 }
  $scope.fetchMessage = function() {
    
@@ -222,3 +254,8 @@ $scope.mapd3 = function() {
  }
 
 });
+var FindName = function() {
+  var name = 'tyler';
+  this.age = '24';
+  this.color = 'red';
+}
