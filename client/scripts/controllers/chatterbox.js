@@ -8,9 +8,9 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
    ref.on('value', gotData, errData);
 
    function gotData(data) {
-    
+
     var twilioMessages = data.val();
-    console.log('--------', data.val())
+    // console.log('--------', data.val())
     // $scope.mapd3();
    }
 
@@ -29,7 +29,7 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
  $scope.sendMessage = function(userId, text) {
    var chatEmail = databaseAndAuth.auth.currentUser.email;
    var chatUsername = chatEmail.slice(0, chatEmail.indexOf('@'));
-   
+
    var chatId = +new Date(Date()); //use time in milliseconds for chatId
    // var ref = database.ref('twilioMessages');
    // ref.on('value', gotData, errData);
@@ -56,6 +56,7 @@ window.Stream;
    function gotData(data) {
       var counter = 0;
 
+<<<<<<< e1ea640616f9b3c9b49b89ed005eccabc68a913f
       var fireData = data.val();
 
       if (path === 'twilioMessages') {
@@ -100,6 +101,7 @@ $rootScope.mapd3 = function() {
         console.log('`````````````', data);
      if (data.length === 3) {
 
+    var twilioMessages = data.val();
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
         .attr('height', 300)
@@ -120,7 +122,7 @@ $rootScope.mapd3 = function() {
 
   data.forEach(function(d) {
     d.frequency = +d.frequency;
-    return d; 
+    return d;
   })
   x.domain(data.map(function(d) { return d.letter; }));
   y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
@@ -141,7 +143,7 @@ $rootScope.mapd3 = function() {
       .attr("text-anchor", "end")
       .text("Frequency")
       .attr({"y": function(d){ return yScale(d.frequency); }});
-      
+
   g.selectAll(".bar")
     .data(data)
     .enter().append("rect")
@@ -154,15 +156,38 @@ $rootScope.mapd3 = function() {
       .attr("y", function(d) { return y(d.frequency); })
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.frequency); });
+   }
 
-     }   
+   function errData(err) {
+    console.log(err)
+   }
+   database.ref('chats/' + chatId).set({
+     username: chatUsername,
+     text: $scope.text,
+     createdAt: Date()
+   });
+
+   $scope.text = '';
+ };
+ /**
+   * @function fetchMessage
+   * @memberOf chatterboxCtrl
+   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
+ */
+$scope.binaryClient;
+$scope.isRecording = null;
+window.Stream;
+
+$scope.mapd3 = function() {
+  // we are going to make a request to the server side
+     }
       })
     });
 }
  $scope.fetchMessage = function() {
-   
+
    var ref = database.ref('chats');
-   
+
    ref.limitToLast(9).on('value', function(chat) {
      $scope.messageObj = chat.val();
      $scope.$apply();
@@ -198,8 +223,8 @@ $rootScope.mapd3 = function() {
            alert('Error capturing audio.');
          });
        } else alert('getUserMedia not supported in this browser.');
-       
- 
+
+
 
        function success(e) {
          audioContext = window.AudioContext || window.webkitAudioContext;
@@ -217,9 +242,9 @@ $rootScope.mapd3 = function() {
           }
            console.log ('recording');
            var left = e.inputBuffer.getChannelData(0);
-          
+
            window.Stream.write(convertoFloat32ToInt16(left));
-          
+
          }
 
          audioInput.connect(recorder)
@@ -245,6 +270,7 @@ $rootScope.mapd3 = function() {
  }
 
 });
+
 var FindName = function() {
   var name = 'tyler';
   this.age = '24';

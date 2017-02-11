@@ -108,10 +108,6 @@ app.post('/voice', function(req, res) {
 
 // Allows us to work with the recording when it is done transcribing
 app.post('/handleTranscribe', function(req, res) {
-  console.log('From', req.body.From.slice(1));
-  console.log('To text', req.body.To.slice(1));
-  console.log('transcription text', req.body.TranscriptionText);
-
   var sender = req.body.From.slice(1);
   var message = req.body.TranscriptionText;
   var userTwilioNumber = req.body.To.slice(1);
@@ -151,7 +147,6 @@ app.post('/message', function(req, res) {
     </Response>`)
 });
 
-
 //start and stop recording
 app.post('/recorder', function(req, res) {
     console.log('PARSED request', req.socket);
@@ -161,12 +156,6 @@ app.post('/recorder', function(req, res) {
 app.get('*', function (req, res) {
  res.sendFile(path.join(__dirname, '/../client/index.html'));
 });
-
-// app.get('/send-message', function(req,res) {
-//   console.log('serving request ' + req.method + ' at ' + req.url);
-//   res.sendFile(path.join(__dirname, '/../client/index.html'));
-// });
-
 
 app.listen(3000, function() {
   console.log('listening on port 3000');
