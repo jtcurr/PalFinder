@@ -42,29 +42,83 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+// Config for BinaryJS
 var index = 1;
-var outFile = 'demo'+index+'.wav';
+var outFile = 'demo'+ index +'.wav';
 
-var speech_to_text = new SpeechToTextV1 ({
- username: auth.speech_to_text.username,
- password: auth.speech_to_text.password
-});
-
-var params = {
-  model: 'en-US_BroadbandModel',
-  content_type: 'audio/wav',
-  continuous: true,
-  'interim_results': true,
-  'max_alternatives': 3,
-  'word_confidence': false,
-  timestamps: false,
-  smart_formatting: true
+//Config for Google Speech
+const request = {
+  config: {
+    encoding: 'LINEAR16',
+    sampleRate: 48000
+  }
 };
+
+// For Google Speech streaming - will call in 'TranslateSpeechToText()'
+function streamingRecognize () {
+  // Imports the Google Cloud client library
+  const Speech = require('@google-cloud/speech');
+
+  // Instantiates a client
+  const speech = Speech();
+
+  // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
+  // const filename = '/path/to/audio.raw';
+
+  // The encoding of the audio file, e.g. 'LINEAR16'
+  // const encoding = 'LINEAR16';
+
+  // The sample rate of the audio file, e.g. 16000
+  // const sampleRate = 16000;
+
+  const request = {
+    config: {
+      encoding: 'LINEAR16',
+      sampleRate: 48000
+    }
+  };
+
+  // Stream the audio to the Google Cloud Speech API
+  const recognizeStream = speech.createRecognizeStream(request)
+
+    recognizeStream.setEncoding('utf8')
+    .on('error', console.error)
+    .on('data', (data) => {
+      console.log('Data received: %j', data);
+    });
+
+  // Stream an audio file from disk to the Speech API, e.g. "./resources/audio.raw"
+  fs.createReadStream('demo1.wav').pipe(recognizeStream);
+  // [END speech_streaming_recognize]
+
+}
+
+
+
+// Auth for Watson
+// var speech_to_text = new SpeechToTextV1 ({
+//  username: auth.speech_to_text.username,
+//  password: auth.speech_to_text.password
+// });
+
+// Config for Watson speech-to-text
+// var params = {
+//   model: 'en-US_BroadbandModel',
+//   content_type: 'audio/wav',
+//   continuous: true,
+//   'interim_results': true,
+//   'max_alternatives': 3,
+//   'word_confidence': false,
+//   timestamps: false
+// };
 
 
 binaryServer = BinaryServer({port: 9001});
 
-function translateSpeechToText() {
+  /* 
+
+  WATSON:
+
   var recognizeStream = speech_to_text.createRecognizeStream(params);
 
   // Pipe in the audio
@@ -89,24 +143,34 @@ function translateSpeechToText() {
   recognizeStream.on('close', function(event) {
     console.log('CLOSED', event) 
   });
-}
+
+  */
+
 
 binaryServer.on('connection', function(client) {
  console.log('new connection');
 
- var fileWriter = new wav.FileWriter(outFile, {
-   channels: 1,
-   sampleRate: 48000,
-   bitDepth: 16
- });
-
  client.on('stream', function(stream, meta) {
-    stream.pipe(fileWriter);
+
+  const Speech = require('@google-cloud/speech');
+  const speech = Speech();
+  const request = {
+    config: {
+      encoding: 'LINEAR16',
+      sampleRate: 48000
+    }
+  };
+
+  const recognizeStream = speech.createRecognizeStream(request)
+    .on('error', console.error)
+    .on('data', (data) => {
+      process.stdout.write(data.results);
+    });
+
+    stream.pipe(recognizeStream);
 
    stream.on('end', function() {
-    translateSpeechToText();
-     fileWriter.end();
-     console.log('wrote to file ' + outFile);
+      console.log('end')
    });
  });
 });
