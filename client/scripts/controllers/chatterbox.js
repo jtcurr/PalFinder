@@ -57,8 +57,7 @@ window.Stream;
       var counter = 0;
 
       var fireData = data.val();
-      // console.log('--------', data.val())
-      // var dataObj = data.val();
+
       if (path === 'twilioMessages') {
 
         var twilioNumbers = Object.keys(fireData);
@@ -86,8 +85,7 @@ window.Stream;
  }
 
 $rootScope.mapd3 = function() {
-  // console.log('---------' , $scope.firebaseData);
-  // we are going to make a request to the server side
+
   var D3DataObject = {};
   var data = [];
   var pathArray = ['twilioMessages','chats','privateMessages'];
