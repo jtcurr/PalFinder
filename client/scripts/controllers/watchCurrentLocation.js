@@ -1,6 +1,6 @@
 /**
   * @class watchCurrentUserLocation
-  * @description Controller for geolocation. Monitors user's location. Uses browser built-in method 'navigator.geolocation.watchPosition' that triggers every time there is a change in user's location (triggered when $rootScope broadcasts that user is currently logged in). 
+  * @description Controller for geolocation. Monitors user's location. Uses browser built-in method 'navigator.geolocation.watchPosition' that triggers every time there is a change in user's location (triggered when $rootScope broadcasts that user is currently logged in).
 */
 angular.module('myApp').controller('watchCurrentUserLocation', function($rootScope, $scope, databaseAndAuth) {
   /**
@@ -9,7 +9,7 @@ angular.module('myApp').controller('watchCurrentUserLocation', function($rootSco
     * @description Triggers when change in user location is detected. Sends the user's location to the database (based on the user's unique ID)
   */
   var success = function(response) {
-    console.log('success! ', response.coords);
+    // console.log('success! ', response.coords);
     databaseAndAuth.database.ref('users/' + $scope.userId + '/coordinates').update({
       latitude: response.coords.latitude,
       longitude: response.coords.longitude
@@ -33,9 +33,9 @@ angular.module('myApp').controller('watchCurrentUserLocation', function($rootSco
     timeout: 1,
     maximumAge: Infinity
   };
-  
+
   $scope.$on('user:logIn', function(event, data) {
-    $scope.userId = data; 
+    $scope.userId = data;
     navigator.geolocation.watchPosition(success, error, options);
   });
 });

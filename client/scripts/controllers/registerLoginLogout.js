@@ -101,10 +101,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
     @param databaseUser if user is logged in, databaseUser will be truthy and will contain information about that user (from the database). This information is used to identify the user and attach their messages and location to their appropriate database entry (i.e. John's location will not be stored under Amy's database entry). If user is logged out, databaseUser will be falsy.
   */
   databaseAndAuth.auth.onAuthStateChanged(function(databaseUser) {
-    console.log('scope', $scope);
-    console.log('root scope', $rootScope);
     if (databaseUser) {
-      console.log('calling this function');
+      // console.log('calling this function');
       localStorage.setItem('user', databaseUser);
       runListeners.childChanged();
       runListeners.childAdded();
@@ -184,47 +182,35 @@ var fetchMessages = function () {
   }
 
   var showAllNewMessages = function() {
-    var user = firebase.auth().currentUser.uid;
+    $scope.twilioMessages = [];
+    var user = firebase.auth().currentUser;
     var db = firebase.database();
-    var dbUsersTwilioNumber = db.ref('users/' + user + '/twilioNumber');
+    var dbUsersTwilioNumber = db.ref('users/' + user.uid + '/twilioNumber');
     var dbUser = db.ref('users');
     var dbTwilioMessages = db.ref('twilioMessages');
 
     //Single Twilio Number
-    dbUsersTwilioNumber.on('value', function(snaps) {
-      var userTwilioNumber = snaps.val();
-      //All Users -> unique -> username / password
-      dbUser.on('value', function(sn) {
-        var users = sn.val();
-        //All TwilioMessages -> Twilio Number -> unique -> body / from
-        dbTwilioMessages.on('value', function(snapshot) {
-          var allTwilioMessages = snapshot.val();
-          //loop through twilio numbers
-          for(var key in allTwilioMessages) {
-            //loop through unique numbers
-            for(var k in allTwilioMessages[key]) {
-              //loop through each user
-              for(var ke in users) {
-                var username = users[ke].username;
-                var userPhoneNumber = users[ke].phoneNumber;
-                //if twilio message phone number matches a users twilio number
-                if(allTwilioMessages[key][k].from == userPhoneNumber){
-                  //replace number with username
-                  allTwilioMessages[key][k].from = username;
-                  //users twilio messages equal the values of each of the unique numbers
-                  $scope.twilioMessages = allTwilioMessages[key];
-                } else {
-                  if(allTwilioMessages[key][k].from) {
-                    //if from matches the users phone number
-                    //users twilio messages equal the values of each of the unique numbers
-                    $scope.twilioMessages = allTwilioMessages[key];
-                  }
-                }
+    dbUser.on('value', function(sn) {
+      var users = sn.val();
+      //loop through each user
+      for(var ke in users) {
+        //when we have the right user
+        if(user.email === users[ke].email) {
+          //we get their twilio number
+          var loggedInUsersTwilioNumber = users[ke].twilioNumber;
+          //All TwilioMessages -> Twilio Number -> unique -> body / from
+          dbTwilioMessages.on('value', function(snaps) {
+            var twilioNumbersFromMessages = snaps.val();
+            //loop through twilio numbers
+            for(var key in twilioNumbersFromMessages) {
+              if(key == loggedInUsersTwilioNumber) {
+                //users twilio messages equal the values of each of the unique numbers
+                $scope.twilioMessages = twilioNumbersFromMessages[key];
               }
             }
-          }
-        });
-      })
+          })
+        }
+      }
     });
   }
 });
