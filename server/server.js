@@ -5,9 +5,6 @@ var app = express();
 var fs = require('fs');
 var BinaryServer = require('binaryjs').BinaryServer;
 var wav = require('wav');
-var auth = require('./authorization.js');
-var watson = require('watson-developer-cloud');
-var SpeechToTextV1 = require('watson-developer-cloud/speech-to-text/v1');
 var recorder = require('./recorder')
 var bodyParser = require('body-parser');
 var twilio = require('twilio');
@@ -42,10 +39,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-// Config for BinaryJS
-var index = 1;
-var outFile = 'demo'+ index +'.wav';
-
 //Config for Google Speech
 const request = {
   config: {
@@ -54,98 +47,7 @@ const request = {
   }
 };
 
-// For Google Speech streaming - will call in 'TranslateSpeechToText()'
-function streamingRecognize () {
-  // Imports the Google Cloud client library
-  const Speech = require('@google-cloud/speech');
-
-  // Instantiates a client
-  const speech = Speech();
-
-  // The path to the local file on which to perform speech recognition, e.g. /path/to/audio.raw
-  // const filename = '/path/to/audio.raw';
-
-  // The encoding of the audio file, e.g. 'LINEAR16'
-  // const encoding = 'LINEAR16';
-
-  // The sample rate of the audio file, e.g. 16000
-  // const sampleRate = 16000;
-
-  const request = {
-    config: {
-      encoding: 'LINEAR16',
-      sampleRate: 48000
-    }
-  };
-
-  // Stream the audio to the Google Cloud Speech API
-  const recognizeStream = speech.createRecognizeStream(request)
-
-    recognizeStream.setEncoding('utf8')
-    .on('error', console.error)
-    .on('data', (data) => {
-      console.log('Data received: %j', data);
-    });
-
-  // Stream an audio file from disk to the Speech API, e.g. "./resources/audio.raw"
-  fs.createReadStream('demo1.wav').pipe(recognizeStream);
-  // [END speech_streaming_recognize]
-
-}
-
-
-
-// Auth for Watson
-// var speech_to_text = new SpeechToTextV1 ({
-//  username: auth.speech_to_text.username,
-//  password: auth.speech_to_text.password
-// });
-
-// Config for Watson speech-to-text
-// var params = {
-//   model: 'en-US_BroadbandModel',
-//   content_type: 'audio/wav',
-//   continuous: true,
-//   'interim_results': true,
-//   'max_alternatives': 3,
-//   'word_confidence': false,
-//   timestamps: false
-// };
-
-
 binaryServer = BinaryServer({port: 9001});
-
-  /* 
-
-  WATSON:
-
-  var recognizeStream = speech_to_text.createRecognizeStream(params);
-
-  // Pipe in the audio
-  fs.createReadStream('demo1.wav').pipe(recognizeStream);
-
-  // Pipe out the transcription to a file.
-  recognizeStream.pipe(fs.createWriteStream('transcription.txt'));
-
-  // Get strings instead of buffers from 'data' events.
-  recognizeStream.setEncoding('utf8');
-
-  // Listen for events.
-  recognizeStream.on('results', function(event) {
-    console.log('RESULT', event);
-  });
-  recognizeStream.on('data', function(event) {
-    console.log('DATA',event);
-  });
-  recognizeStream.on('error', function(event) {
-    console.log('ERROR', event)
-  });
-  recognizeStream.on('close', function(event) {
-    console.log('CLOSED', event)
-  });
-
-  */
-
 
 binaryServer.on('connection', function(client) {
  console.log('new connection');
@@ -217,11 +119,10 @@ app.get('/getMessages', function(uid) {
 app.post('/message', function(req, res) {
   console.log('----------', req.body);
 
-  var msgTo = req.body.To.slice(1);
+  var msgTo = req.body.To;
   var unqNumber = req.body.SmsMessageSid;
-  var msgFrom = req.body.From.slice(1);
+  var msgFrom = req.body.From;
   var msgBody = req.body.Body;
-  
   db.ref('twilioMessages/' + msgTo + '/' +  unqNumber).set({
     "from": msgFrom,
     "body": msgBody
