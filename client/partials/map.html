@@ -27,8 +27,11 @@
 </div> 
 
 <div class="panel" ng-controller="chatterboxCtrl" ng-show="showMessages" ng-init="fetchMessage()">
-
-  <div class="panel-body chat-window" >
+  <div class="graph">
+ <button ng-click="sendMessage()">D3 Graph</button>
+  <div>
+  <div id=wrap>
+    <div class="panel-body chat-window" >
     <div style="height: 80%">
       <div ng-repeat="message in messageObj" style="margin: 10px 0;">
         <b>{{message.username}}</b>: {{message.text}}
@@ -40,21 +43,17 @@
       <a href="" ng-click="hidePartial()">Close</a>
     </div>
 
-    <div class="input-field">
+    <div class="input-field" ng-controller="chatterboxCtrl">
       <form>
         <input type="text" ng-model="text" style="width: 87%" autofocus />
           <img id='img' ng-src="../images/{{srcChange}}" ng-click="recording()">
         <button type="submit" ng-click="sendMessage()" style="visibility: hidden">Send Message</button>
         
       </form>
-
+    </div>
 </div>
-
+</div>
 
 <div ng-controller="watchCurrentUserLocation"></div>
 
 <div ng-controller="chatterboxCtrl" ng-init="fetchMessage()"></div>
-
-
-
-    
