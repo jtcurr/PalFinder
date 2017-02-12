@@ -132,9 +132,9 @@ app.get('/getMessages', function(uid) {
 app.post('/message', function(req, res) {
   console.log('----------', req.body);
 
-  var msgTo = req.body.To;
+  var msgTo = req.body.To.slice(1);
   var unqNumber = req.body.SmsMessageSid;
-  var msgFrom = req.body.From;
+  var msgFrom = req.body.From.slice(1);
   var msgBody = req.body.Body;
 
   db.ref('twilioMessages/' + msgTo + '/' +  unqNumber).set({

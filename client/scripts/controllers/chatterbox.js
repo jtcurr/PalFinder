@@ -164,22 +164,6 @@ $scope.isRecording = null;
 window.Stream;
 
 $scope.mapd3 = function() {
-  // we are going to make a request to the server side
-     }
-      })
-    });
-   $scope.text = '';
- };
- /**
-   * @function fetchMessage
-   * @memberOf chatterboxCtrl
-   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
- */
-$scope.binaryClient;
-$scope.isRecording = null;
-window.Stream;
-
-$scope.mapd3 = function() {
   // console.log('---------' , $scope.firebaseData);
   // we are going to make a request to the server side
 
