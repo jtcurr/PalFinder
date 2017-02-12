@@ -27,6 +27,6 @@
     "google-speech-api": "^1.2.0",
     "microphone-stream": "^3.0.6",
     "requirejs": "^2.3.2",
-    "twilio": "^2.11.1",
+    "twilio": "^2.11.1"
   }
 }

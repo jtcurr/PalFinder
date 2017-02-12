@@ -26,9 +26,11 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
    * @memberOf chatterboxCtrl
    * @description Gets the user email and username from the database. Takes user input ($scope.text) and updates the database with that input. Each input is added to the user that submitted it.
  */
+
  $scope.sendMessage = function(userId, text) {
    var chatEmail = databaseAndAuth.auth.currentUser.email;
    var chatUsername = chatEmail.slice(0, chatEmail.indexOf('@'));
+   $rootScope.username = chatUsername;
    
    var chatId = +new Date(Date()); //use time in milliseconds for chatId
    // var ref = database.ref('twilioMessages');
@@ -183,6 +185,19 @@ $rootScope.mapd3 = function() {
 
    } else {
      $scope.srcChange = "green.jpg";
+    var chatEmail = databaseAndAuth.auth.currentUser.email;
+    var chatUsername = chatEmail.slice(0, chatEmail.indexOf('@'));
+    console.log('SCOPE', chatUsername)
+    var data = {
+      username: chatUsername
+    };
+    $http({
+    method: 'POST',
+    url:'/recording',
+    data: JSON.stringify(data)
+    }).then(function successCallback(response){
+      console.log('SUCCESSFUL POST', response)
+    })
 
      $scope.binaryClient = new BinaryClient('ws://localhost:9001');
 

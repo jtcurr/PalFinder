@@ -1,10 +1,10 @@
+
 var express = require('express');
 var path = require('path');
 var https = require('https');
 var app = express();
 var fs = require('fs');
 var BinaryServer = require('binaryjs').BinaryServer;
-var wav = require('wav');
 var recorder = require('./recorder')
 var bodyParser = require('body-parser');
 var twilio = require('twilio');
@@ -39,6 +39,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+app.use(bodyParser.json());
+
 //Config for Google Speech
 const request = {
   config: {
@@ -50,7 +52,7 @@ const request = {
 binaryServer = BinaryServer({port: 9001});
 
 binaryServer.on('connection', function(client) {
- console.log('new connection');
+ console.log('new connection!');
 
  client.on('stream', function(stream, meta) {
 
@@ -63,11 +65,10 @@ binaryServer.on('connection', function(client) {
     }
   };
 
-  var message = '';
   const recognizeStream = speech.createRecognizeStream(request)
     .on('error', console.error)
     .on('data', (data) => {
-
+console.log('data!')
       // process.stdout.write(data.results);
       // DATA 
       if (data.results) {
@@ -76,7 +77,7 @@ binaryServer.on('connection', function(client) {
         db.ref('chats/' + id).update({
           'createdAt': new Date(),
           'text': message,
-          'username': 'recording'
+          'username': userName
         });
         db.ref('recordMessages/' + id).update({
           'message': message,
@@ -95,6 +96,11 @@ binaryServer.on('connection', function(client) {
 });
 
 app.use(express.static(__dirname + '/../client'));
+
+var userName;
+app.post('/recording', function(req, res) {
+ userName = req.body.username;
+})
 
 //Records and transcribes phone calls
 app.post('/voice', function(req, res) {
