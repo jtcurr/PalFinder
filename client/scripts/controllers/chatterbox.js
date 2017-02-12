@@ -72,7 +72,8 @@ window.Stream;
    }
  }
 
-$scope.mapd3 = function(cb) {
+$scope.mapd3 = function() {
+
   var D3DataObject = {};
   var data = [];
   var pathArray = ['twilioMessages','chats','privateMessages'];
@@ -85,7 +86,7 @@ $scope.mapd3 = function(cb) {
         D3DataObject = {};
         console.log('`````````````', data);
      if (data.length === 3) {
-       
+
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
         .attr('height', 300)
@@ -141,8 +142,6 @@ $scope.mapd3 = function(cb) {
       .attr("height", function(d) { return height - y(d.frequency); });
    }
 
-<<<<<<< 85641714db4dc91a49867570fe3bafd85c24187b
-=======
    function errData(err) {
     console.log(err)
    }
@@ -168,7 +167,6 @@ $scope.mapd3 = function() {
   // we are going to make a request to the server side
 
      }
->>>>>>> rebase
     })
   });
 }
