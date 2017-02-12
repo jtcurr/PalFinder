@@ -141,6 +141,50 @@ $scope.mapd3 = function(cb) {
       .attr("height", function(d) { return height - y(d.frequency); });
    }
 
+<<<<<<< 85641714db4dc91a49867570fe3bafd85c24187b
+=======
+   function errData(err) {
+    console.log(err)
+   }
+   database.ref('chats/' + chatId).set({
+     username: chatUsername,
+     text: $scope.text,
+     createdAt: Date()
+   });
+
+   $scope.text = '';
+ };
+ /**
+   * @function fetchMessage
+   * @memberOf chatterboxCtrl
+   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
+ */
+$scope.binaryClient;
+$scope.isRecording = null;
+window.Stream;
+
+$scope.mapd3 = function() {
+  // we are going to make a request to the server side
+     }
+      })
+    });
+   $scope.text = '';
+ };
+ /**
+   * @function fetchMessage
+   * @memberOf chatterboxCtrl
+   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
+ */
+$scope.binaryClient;
+$scope.isRecording = null;
+window.Stream;
+
+$scope.mapd3 = function() {
+  // console.log('---------' , $scope.firebaseData);
+  // we are going to make a request to the server side
+
+     }
+>>>>>>> rebase
     })
   });
 }
