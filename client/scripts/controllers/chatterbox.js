@@ -85,7 +85,7 @@ $scope.mapd3 = function(cb) {
         D3DataObject = {};
         console.log('`````````````', data);
      if (data.length === 3) {
-
+       
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
         .attr('height', 300)
