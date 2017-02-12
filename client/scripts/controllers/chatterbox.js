@@ -57,8 +57,7 @@ window.Stream;
       var counter = 0;
 
       var fireData = data.val();
-      // console.log('--------', data.val())
-      // var dataObj = data.val();
+
       if (path === 'twilioMessages') {
 
         var twilioNumbers = Object.keys(fireData);
@@ -85,20 +84,12 @@ window.Stream;
   }
  }
 
-$scope.mapd3 = function(cb) {
-  // console.log('---------' , $scope.firebaseData);
-  // we are going to make a request to the server side
+$rootScope.mapd3 = function() {
+
   var D3DataObject = {};
   var data = [];
   var pathArray = ['twilioMessages','chats','privateMessages'];
-    // var twilioMessages = data.val();
-    // console.log('--------', data.val())
-    // var dataObj = data.val();
-    // var keys = Object.keys(data.val());
-    // var counter = 0;
-    // var count = keys.map(function(key) {
-    //   return Object.keys(dataObj[key]).length;
-    // })
+
     pathArray.forEach(function(path) {
       firebaseDatabase(path, function(counter) {
         console.log('^^^^^^^^^^^^', path);
@@ -249,7 +240,7 @@ $scope.mapd3 = function(cb) {
 
  }
 
- $scope.hidePartial = function() {
+ $rootScope.hidePartial = function() {
    $rootScope.showMessages = false;
  }
 

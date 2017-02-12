@@ -82,6 +82,8 @@ angular.module('myApp').controller('registerLogInLogOut', function($rootScope, $
   */
   $scope.showPartial = function() {
     $rootScope.showMessages = true;
+    $rootScope.mapd3();
+
   }
   /**
     * @function $scope.signUp
