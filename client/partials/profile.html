@@ -14,6 +14,10 @@
       <input type="text" ng-model="newPhoneNumber">
       <button type="submit" ng-click="updatePhoneNumber()">Update Phone Number</button>
   </div>
+  <div ng-controller="searchMessages">
+      <input type="text" ng-model="newSearch">
+      <button type="submit" ng-click="searchAllMessages(newSearch)">Search My Messages</button>
+  </div>
   <div id="sendMessages">
       <input type="text" ng-model="message">
       <select ng-model="target">
@@ -28,6 +32,22 @@
       <h4>Twilio Messages</h4>
       <ul ng-repeat="message in twilioMessages">
         <li ng-if="message.from"> {{message.from}} : {{message.body}}</li>
+      </ul>
+  </div>
+  <div ng-controller="searchMessages">
+      <h4>Chat Search Results</h4>
+      <ul>
+          <li ng-repeat="chatMess in chatMessage">{{chatMess.username}} : {{chatMess.text}}</li>
+      </ul>
+
+      <h4>Private Search Results</h4>
+      <ul>
+          <li ng-repeat="privateMess in privMessage">{{privateMess.sender}} : {{privateMess.message}}</li>
+      </ul>
+
+      <h4>Twilio Search Results</h4>
+      <ul>
+        <li ng-repeat="message1 in matchingTwilioMessage"> {{message1.from}} : {{message1.body}}</li>
       </ul>
   </div>
 </div>

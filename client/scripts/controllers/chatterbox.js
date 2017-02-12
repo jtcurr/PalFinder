@@ -4,19 +4,7 @@
 angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope, $location, $http, databaseAndAuth) {
 
  var database = firebase.database();
-   var ref = database.ref('twilioMessages');
-   ref.on('value', gotData, errData);
 
-   function gotData(data) {
-    
-    var twilioMessages = data.val();
-    console.log('--------', data.val())
-    // $scope.mapd3();
-   }
-
-   function errData(err) {
-    console.log(err)
-   }
  //default setting for recording button
  $scope.srcChange = "red.png";
 
@@ -29,7 +17,7 @@ angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope
  $scope.sendMessage = function(userId, text) {
    var chatEmail = databaseAndAuth.auth.currentUser.email;
    var chatUsername = chatEmail.slice(0, chatEmail.indexOf('@'));
-   
+
    var chatId = +new Date(Date()); //use time in milliseconds for chatId
    // var ref = database.ref('twilioMessages');
    // ref.on('value', gotData, errData);
@@ -55,9 +43,7 @@ window.Stream;
    ref.on('value', gotData, errData);
    function gotData(data) {
       var counter = 0;
-
       var fireData = data.val();
-
       if (path === 'twilioMessages') {
 
         var twilioNumbers = Object.keys(fireData);
@@ -81,7 +67,7 @@ window.Stream;
    }
   function errData(err) {
     console.log(err)
-  }
+   }
  }
 
 $rootScope.mapd3 = function() {
@@ -92,7 +78,6 @@ $rootScope.mapd3 = function() {
 
     pathArray.forEach(function(path) {
       firebaseDatabase(path, function(counter) {
-        console.log('^^^^^^^^^^^^', path);
         D3DataObject["frequency"] = counter;
         D3DataObject["letter"] = path;
         data.push(D3DataObject);
@@ -102,7 +87,7 @@ $rootScope.mapd3 = function() {
 
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
-        .attr('height', 300)
+        .attr('height', 400)
     svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -120,11 +105,10 @@ $rootScope.mapd3 = function() {
 
   data.forEach(function(d) {
     d.frequency = +d.frequency;
-    return d; 
+    return d;
   })
   x.domain(data.map(function(d) { return d.letter; }));
   y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-  console.log(y);
 
   g.append("g")
       .attr("class", "axis axis--x")
@@ -141,7 +125,7 @@ $rootScope.mapd3 = function() {
       .attr("text-anchor", "end")
       .text("Frequency")
       .attr({"y": function(d){ return yScale(d.frequency); }});
-      
+
   g.selectAll(".bar")
     .data(data)
     .enter().append("rect")
@@ -154,20 +138,19 @@ $rootScope.mapd3 = function() {
       .attr("y", function(d) { return y(d.frequency); })
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.frequency); });
-
-     }   
-      })
-    });
+    }
+    })
+  });
 }
+
  $scope.fetchMessage = function() {
-   
+
    var ref = database.ref('chats');
-   
+
    ref.limitToLast(9).on('value', function(chat) {
      $scope.messageObj = chat.val();
      $scope.$apply();
    });
-
  };
 
  $scope.recording = function(){
@@ -175,7 +158,6 @@ $rootScope.mapd3 = function() {
      audio: true,
      video: false
    };
-
 
    if ($scope.srcChange === "green.jpg") {
      $scope.srcChange = "red.png";
@@ -198,8 +180,6 @@ $rootScope.mapd3 = function() {
            alert('Error capturing audio.');
          });
        } else alert('getUserMedia not supported in this browser.');
-       
- 
 
        function success(e) {
          audioContext = window.AudioContext || window.webkitAudioContext;
@@ -217,9 +197,9 @@ $rootScope.mapd3 = function() {
           }
            console.log ('recording');
            var left = e.inputBuffer.getChannelData(0);
-          
+
            window.Stream.write(convertoFloat32ToInt16(left));
-          
+
          }
 
          audioInput.connect(recorder)
@@ -237,14 +217,12 @@ $rootScope.mapd3 = function() {
        }
      });
    }
-
  }
-
- $rootScope.hidePartial = function() {
+ $scope.hidePartial = function() {
    $rootScope.showMessages = false;
  }
-
 });
+
 var FindName = function() {
   var name = 'tyler';
   this.age = '24';
