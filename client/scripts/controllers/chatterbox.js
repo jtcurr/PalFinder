@@ -4,19 +4,7 @@
 angular.module('myApp').controller('chatterboxCtrl', function($scope, $rootScope, $location, $http, databaseAndAuth) {
 
  var database = firebase.database();
-   var ref = database.ref('twilioMessages');
-   ref.on('value', gotData, errData);
 
-   function gotData(data) {
-
-    var twilioMessages = data.val();
-    // console.log('--------', data.val())
-    // $scope.mapd3();
-   }
-
-   function errData(err) {
-    console.log(err)
-   }
  //default setting for recording button
  $scope.srcChange = "red.png";
 
@@ -55,10 +43,9 @@ window.Stream;
    ref.on('value', gotData, errData);
    function gotData(data) {
       var counter = 0;
-
-<<<<<<< e1ea640616f9b3c9b49b89ed005eccabc68a913f
       var fireData = data.val();
-
+      // console.log('--------', data.val())
+      // var dataObj = data.val();
       if (path === 'twilioMessages') {
 
         var twilioNumbers = Object.keys(fireData);
@@ -82,18 +69,16 @@ window.Stream;
    }
   function errData(err) {
     console.log(err)
-  }
+   }
  }
 
-$rootScope.mapd3 = function() {
-
+$scope.mapd3 = function(cb) {
   var D3DataObject = {};
   var data = [];
   var pathArray = ['twilioMessages','chats','privateMessages'];
 
     pathArray.forEach(function(path) {
       firebaseDatabase(path, function(counter) {
-        console.log('^^^^^^^^^^^^', path);
         D3DataObject["frequency"] = counter;
         D3DataObject["letter"] = path;
         data.push(D3DataObject);
@@ -101,7 +86,6 @@ $rootScope.mapd3 = function() {
         console.log('`````````````', data);
      if (data.length === 3) {
 
-    var twilioMessages = data.val();
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
         .attr('height', 300)
@@ -126,7 +110,6 @@ $rootScope.mapd3 = function() {
   })
   x.domain(data.map(function(d) { return d.letter; }));
   y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-  console.log(y);
 
   g.append("g")
       .attr("class", "axis axis--x")
@@ -158,31 +141,8 @@ $rootScope.mapd3 = function() {
       .attr("height", function(d) { return height - y(d.frequency); });
    }
 
-   function errData(err) {
-    console.log(err)
-   }
-   database.ref('chats/' + chatId).set({
-     username: chatUsername,
-     text: $scope.text,
-     createdAt: Date()
-   });
-
-   $scope.text = '';
- };
- /**
-   * @function fetchMessage
-   * @memberOf chatterboxCtrl
-   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
- */
-$scope.binaryClient;
-$scope.isRecording = null;
-window.Stream;
-
-$scope.mapd3 = function() {
-  // we are going to make a request to the server side
-     }
-      })
-    });
+    })
+  });
 }
  $scope.fetchMessage = function() {
 
@@ -192,7 +152,6 @@ $scope.mapd3 = function() {
      $scope.messageObj = chat.val();
      $scope.$apply();
    });
-
  };
 
  $scope.recording = function(){
@@ -200,7 +159,6 @@ $scope.mapd3 = function() {
      audio: true,
      video: false
    };
-
 
    if ($scope.srcChange === "green.jpg") {
      $scope.srcChange = "red.png";
@@ -223,8 +181,6 @@ $scope.mapd3 = function() {
            alert('Error capturing audio.');
          });
        } else alert('getUserMedia not supported in this browser.');
-
-
 
        function success(e) {
          audioContext = window.AudioContext || window.webkitAudioContext;
@@ -262,13 +218,10 @@ $scope.mapd3 = function() {
        }
      });
    }
-
  }
-
- $rootScope.hidePartial = function() {
+ $scope.hidePartial = function() {
    $rootScope.showMessages = false;
  }
-
 });
 
 var FindName = function() {
