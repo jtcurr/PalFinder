@@ -63,15 +63,34 @@ binaryServer.on('connection', function(client) {
     }
   };
 
+  var message = '';
   const recognizeStream = speech.createRecognizeStream(request)
     .on('error', console.error)
     .on('data', (data) => {
-      process.stdout.write(data.results);
+
+      // process.stdout.write(data.results);
+      // DATA 
+      if (data.results) {
+        message += data.results;
+        var id = Date.now();
+        // var username = admin.val();
+        // console.log(username)
+        db.ref('chats/' + id).update({
+          'createdAt': new Date(),
+          'text': message,
+          'username': 'recording'
+        });
+        db.ref('recordMessages/' + id).update({
+          'message': message,
+        });
+        console.log('data message', message)
+      }
     });
 
     stream.pipe(recognizeStream);
 
    stream.on('end', function() {
+      message = '';
       console.log('end')
    });
  });
