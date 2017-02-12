@@ -73,8 +73,6 @@ binaryServer.on('connection', function(client) {
       if (data.results) {
         message += data.results;
         var id = Date.now();
-        // var username = admin.val();
-        // console.log(username)
         db.ref('chats/' + id).update({
           'createdAt': new Date(),
           'text': message,
