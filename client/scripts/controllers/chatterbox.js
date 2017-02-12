@@ -44,8 +44,6 @@ window.Stream;
    function gotData(data) {
       var counter = 0;
       var fireData = data.val();
-      // console.log('--------', data.val())
-      // var dataObj = data.val();
       if (path === 'twilioMessages') {
 
         var twilioNumbers = Object.keys(fireData);
@@ -72,7 +70,7 @@ window.Stream;
    }
  }
 
-$scope.mapd3 = function() {
+$rootScope.mapd3 = function() {
 
   var D3DataObject = {};
   var data = [];
@@ -89,7 +87,7 @@ $scope.mapd3 = function() {
 
     var svg = d3.select(".graph").append("svg")
         .attr('width', 500)
-        .attr('height', 300)
+        .attr('height', 400)
     svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = +svg.attr("width") - margin.left - margin.right,
@@ -140,36 +138,11 @@ $scope.mapd3 = function() {
       .attr("y", function(d) { return y(d.frequency); })
       .attr("width", x.bandwidth())
       .attr("height", function(d) { return height - y(d.frequency); });
-   }
-
-   function errData(err) {
-    console.log(err)
-   }
-   database.ref('chats/' + chatId).set({
-     username: chatUsername,
-     text: $scope.text,
-     createdAt: Date()
-   });
-
-   $scope.text = '';
- };
- /**
-   * @function fetchMessage
-   * @memberOf chatterboxCtrl
-   * @description Gets all the chats from the database, attaches them to the scope, and then renders the updated scope ($scope.apply())
- */
-$scope.binaryClient;
-$scope.isRecording = null;
-window.Stream;
-
-$scope.mapd3 = function() {
-  // console.log('---------' , $scope.firebaseData);
-  // we are going to make a request to the server side
-
-     }
+    }
     })
   });
 }
+
  $scope.fetchMessage = function() {
 
    var ref = database.ref('chats');

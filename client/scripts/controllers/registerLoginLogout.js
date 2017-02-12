@@ -190,7 +190,9 @@ var fetchMessages = function () {
     var dbUser = db.ref('users');
     var dbTwilioMessages = db.ref('twilioMessages');
     var twilioNumbersArr = {};
-
+    dbTwilioMessages.on('value', function(s) {
+      var s = snaps.val();
+    })
     dbUser.on('value', function(sn) {
       var users = sn.val();
       //loop through each user
