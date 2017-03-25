@@ -68,9 +68,6 @@ binaryServer.on('connection', function(client) {
   const recognizeStream = speech.createRecognizeStream(request)
     .on('error', console.error)
     .on('data', (data) => {
-console.log('data!')
-      // process.stdout.write(data.results);
-      // DATA 
       if (data.results) {
         message += data.results;
         var id = Date.now();
